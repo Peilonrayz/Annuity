@@ -1,0 +1,135 @@
+<!Doctype HTML>
+<html lan-"en">
+    <head>
+        <meta charset="utf-8">
+        <title>Annuity</title>
+        <style>
+            body {
+                width: 35em;
+                margin: 1em auto;
+                border: 1px solid #DDDDDD;
+                padding: 1em;
+            }
+            h1{
+                margin-top: 0;
+                margin-bottom: 0.2em
+            }
+            h2{
+                margin-top: 0.5em;
+                margin-bottom: 0.2em;
+            }
+            h3{
+                margin:0;
+            }
+            #Months {
+                text-align: center;
+                margin: 0 0.5em;
+            }
+            #EMonths {
+                text-align: center;
+                margin: 0 0.5em;
+            }
+            #InpCont{
+                width: 15em
+            }
+            #Container{
+                display: flex;
+            }
+            #Output{
+                flex: 1 1 auto;
+            }
+        </style>
+    </head>
+    <body><div>
+        <H1>Annuity</H1>
+        <div id="Container">
+            <div id="Output">
+                <H2>Total amount saved</H2>
+                <H3><div id="tot"></div></H3>
+                
+                <H2>Last Month information</H2>
+                <H3>Beggining of Month Deposit</H3>
+                <div id="BOMD"></div>
+                <H3>Beggining of Month Amount</H3>
+                <div id="BOM"></div>
+                <H3>End of Month Intrest</H3>
+                <div id="EOMI"></div>
+                <H3>End of Month Amount</H3>
+                <div id="EOM"></div>
+            </div>
+            <div id="InpCont">
+                <H2>Deposit Amount</H2>
+                <input id="DA" type="number" min="0.00" value="50.00"/>
+                <H2>Intrest Rates</H2>
+                <input id="IR" type="number" min="0.00" value="3.00"/>
+                <H2>Anual Deposit Intrest</H2>
+                <input id="AI" type="number" value="0.00"/>
+                <H2>Start Age</H2>
+                <input id="Age" type="number" min="0.00" value="20.00"/>
+                <H2>Start Months</H2>
+                <div id="Months"></div>
+                <H2>Info Age</H2>
+                <input id="EAge" type="number" min="0.00" value="20.00"/>
+                <H2>Info Months</H2>
+                <div id="EMonths"></div>
+            </div>
+        </div>
+    </div></body>
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+    function moin(){
+        var IR = parseFloat($("#IR").val())/1200;
+        var AI = parseFloat($("#AI").val())/1200 + 1;
+        var SA = parseFloat($("#SA").val());
+        var SM = parseFloat($("#SM").val());
+        var DA = parseFloat($("#DA").val());
+        
+        var age = parseInt($("#EAge").val()) - parseInt($("#Age").val());
+        var month = parseInt($("#EMonths").text()) - parseInt($("#Months").text());
+        var BOM = 0;
+        var BOMD = DA;
+        var EOM = 0;
+        var EOMI = 0;
+        for (var i = 1; i < age*12+month+2; i++){
+            BOM = BOMD + EOM;
+            EOMI = BOM * IR;
+            EOM = BOM + EOMI;
+            BOMD = BOMD * AI;
+        }
+        BOMD = BOMD / AI;
+        $("#BOM").text("$" + BOM.toFixed(2));
+        $("#BOMD").text("$" + BOMD.toFixed(2));
+        $("#EOM").text("$" + EOM.toFixed(2));
+        $("#EOMI").text("$" + EOMI.toFixed(2));
+        $("#tot").text("$" + EOM.toFixed(2));
+    }
+    
+    $(function() {
+        $("#Months").slider({
+            max: 12,
+            min: 1,
+            change: function(event, ui){$("#Months>span").text(ui.value);moin()},
+            create: function(event, ui){$("#Months>span").text(1)},
+            slide: function(event, ui){$("#Months>span").text(ui.value);moin()}
+        });
+        $("#EMonths").slider({
+            max: 12,
+            min: 1,
+            change: function(event, ui){$("#EMonths>span").text(ui.value);moin()},
+            create: function(event, ui){$("#EMonths>span").text(1)},
+            slide: function(event, ui){$("#EMonths>span").text(ui.value);moin()}
+        });
+
+        $("#Age").change(moin);
+        $("#EAge").change(moin);
+        $("#DA").change(moin);
+        $("#IR").change(moin);
+        $("#AI").change(moin);
+        
+        moin();
+    });
+    </script> 
+</html>
